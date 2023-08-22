@@ -268,8 +268,8 @@ class TranslationUnit(object):
             def replace_by_space(matchobj):
                 return ' ' * len(matchobj.group(0))
             text = re.sub(r"\\\\(?<!$)", replace_by_space, text, flags=re.MULTILINE)
-            text = re.sub(r'"(?s).*?(?:(?<!\\)")|\'(?s).*?(?:(?<!\\)\')|\/\*(?s).*?\*\/|\/\/(?s).*?(?:(?<!\\)$)', replace_by_space, text, flags=re.MULTILINE)
-            text = re.sub(r"#(?s).*?(?:(?<!\\)$)", replace_by_space, text, flags=re.MULTILINE)
+            text = re.sub(r'(?s)".*?(?:(?<!\\)")|\'.*?(?:(?<!\\)\')|\/\*.*?\*\/|\/\/.*?(?:(?<!\\)$)', replace_by_space, text, flags=re.MULTILINE)
+            text = re.sub(r"(?s)#.*?(?:(?<!\\)$)", replace_by_space, text, flags=re.MULTILINE)
             text = list(text)
             for search in re.finditer(r"(\b__[a-z_A-Z]+(?:__)?|\bthrow|\bnoexcept|\balignas|(?:->\s*)?\bdecltype)\s*[(]", str(text), flags=re.MULTILINE):
                 level = 0

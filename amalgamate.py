@@ -270,32 +270,32 @@ class TranslationUnit(object):
             text = re.sub(r"\\\\(?<!$)", replace_by_space, text, flags=re.MULTILINE)
             text = re.sub(r'(?s)".*?(?:(?<!\\)")|\'.*?(?:(?<!\\)\')|\/\*.*?\*\/|\/\/.*?(?:(?<!\\)$)', replace_by_space, text, flags=re.MULTILINE)
             text = re.sub(r"(?s)#.*?(?:(?<!\\)$)", replace_by_space, text, flags=re.MULTILINE)
-            text = list(text)
-            for search in re.finditer(r"(\b__[a-z_A-Z]+(?:__)?|\bthrow|\bnoexcept|\balignas|(?:->\s*)?\bdecltype)\s*[(]", str(text), flags=re.MULTILINE):
+            text_list = list(text)
+            for search in re.finditer(r"(\b__[a-z_A-Z]+(?:__)?|\bthrow|\bnoexcept|\balignas|(?:->\s*)?\bdecltype)\s*[(]", text, flags=re.MULTILINE):
                 level = 0
-                for i in range(*search.span(0)):
-                    if text[i] == '{' or text[i] == '}':
-                        text[i] = ' ' # delete in parenthesis
-                    if text[i] == '(':
-                        text[i] = ' ' # delete in parenthesis
+                for i in range(search.span(0)[0], len(text_list)):
+                    if text_list[i] == '{' or text_list[i] == '}':
+                        text_list[i] = ' ' # delete in parenthesis
+                    if text_list[i] == '(':
+                        text_list[i] = ' ' # delete in parenthesis
                         level+=1
-                    elif text[i] == ')':
-                        text[i] = ' ' # delete in parenthesis
+                    elif text_list[i] == ')':
+                        text_list[i] = ' ' # delete in parenthesis
                         level-=1
                         if level == 0:
                             isPrototype = False
-                            for j in range(i + 1, len(text)):
-                                if text[j] == ' ' or text[j] == '\t' or text[j] == '\r' or text[j] == '\n':
+                            for j in range(i + 1, len(text_list)):
+                                if text_list[j] == ' ' or text_list[j] == '\t' or text_list[j] == '\r' or text_list[j] == '\n':
                                     continue
-                                elif text[j] == ';':
+                                elif text_list[j] == ';':
                                     isPrototype = True
                                     break
                                 else:
                                     break
                             if isPrototype == False:
-                                text[search.span(1)[1]] = ':'
+                                text_list[search.span(1)[1]] = ':'
                             break
-            text = ''.join(text)
+            text = ''.join(text_list)
             text = re.sub(r"(?:\bthrow\b|\bnoexcept\b|\balignas\b|(?:->\s*)?\bdecltype\b|\bstruct\b|\bstatic\b|\bunion\b|\benum\b|\bconst\b|\bsizeof\b|\boverride\b|\bvolatile\b)", replace_by_space, text, flags=re.MULTILINE)
             return text
 
